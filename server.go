@@ -45,6 +45,6 @@ func main() {
 	h := &handler.Handler{DB: db}
 	// User Routes
 	e.POST("/user/register", h.Register)
-	e.POST("/auth/routes", h.GetAllRoutes)
+	e.GET("/auth/routes", h.GetAllRoutes)
 	e.Logger.Fatal(e.Start(":8000"))
 }

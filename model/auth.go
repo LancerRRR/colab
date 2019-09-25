@@ -1,6 +1,7 @@
 package model
 
 import (
+	"connect/http/response"
 	"connect/server"
 
 	"github.com/dgrijalva/jwt-go"
@@ -8,16 +9,41 @@ import (
 )
 
 type Route struct {
-	ID         bson.ObjectId `json:"id" bson:"_id"`
-	Path       string        `json:"path" bson:"path"`
-	Method     string        `json:"method" bson:"Method"`
-	IsQuery    bool          `json:"isQuery" bson:"isQuery"`
-	Deprecated bool          `json:"deprecated" bson:"deprecated"`
-	Service    string        `json:"service" bson:"service"`
-	Auth       []string      `json:"auth" bson:"auth"`
-	Required   []string      `json:"required" bson:"required"`
-	Request    interface{}   `json:"request" bson:"request"`
-	Response   interface{}   `json:"response" bson:"response"`
+	ID           bson.ObjectId `json:"id" bson:"_id"`
+	Description  string        `json:"description" bson:"description"`
+	Path         string        `json:"path" bson:"path"`
+	Method       string        `json:"method" bson:"method"`
+	IsQuery      bool          `json:"isQuery" bson:"isQuery"`
+	Deprecated   bool          `json:"deprecated" bson:"deprecated"`
+	Service      string        `json:"service" bson:"service"`
+	Auth         []string      `json:"auth" bson:"auth"`
+	Request      interface{}   `json:"request" bson:"request"`
+	Response     interface{}   `json:"response" bson:"response"`
+	ResponseJSON interface{}   `json:"responseJSON" bson:"responseJSON"`
+}
+
+type Request struct {
+	Type        string `json:"type" bson:"type"`
+	Description string `json:"description" bson:"description"`
+	IsRequired  bool   `json:"isRequired" bson:"isRequired"`
+}
+
+type Response struct {
+	Type        string `json:"type" bson:"type"`
+	Description string `json:"description" bson:"description"`
+}
+
+type RequestNested struct {
+	Type        string      `json:"type" bson:"type"`
+	Description string      `json:"description" bson:"description"`
+	IsRequired  bool        `json:"isRequired" bson:"isRequired"`
+	Nested      interface{} `json:"nested" bson:"nested"`
+}
+
+type ResponseNested struct {
+	Type        string      `json:"type" bson:"type"`
+	Description string      `json:"description" bson:"description"`
+	Nested      interface{} `json:"nested" bson:"nested"`
 }
 
 func GetRouteAuth(path string) ([]string, error) {
@@ -32,8 +58,8 @@ type Claim struct {
 	jwt.StandardClaims
 }
 
-func GetAllRoutes(param bson.M) ([]map[string]interface{}, error) {
-	routes := make([]map[string]interface{}, 0)
+func GetAllRoutes(param bson.M) ([]response.Route, error) {
+	routes := []response.Route{}
 	err := server.Mongodb.DB("Auth").C("routes").Find(nil).Select(param).All(&routes)
 	return routes, err
 }
