@@ -3,8 +3,7 @@ package handler
 import (
 	"connect/http/request"
 	"connect/model"
-	"connect/server"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -15,6 +14,10 @@ import (
 func CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cc := c.(*CustomContext)
+		log.Println(c.Path())
+		if c.Path() == "/ws" || c.Path() == "/test" {
+			return next(c)
+		}
 		routeAuth, err := model.GetRouteAuth(c.Path())
 		if err != nil {
 			return echo.ErrNotFound
@@ -26,7 +29,6 @@ func CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		claim := model.Claim{}
 		tokenStr := c.Request().Header.Get("Authorization")
-		fmt.Println(tokenStr)
 		token, err := jwt.ParseWithClaims(tokenStr, &claim, func(token *jwt.Token) (interface{}, error) {
 			return []byte("shawn"), nil
 		})
@@ -39,13 +41,13 @@ func CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		if time.Now().Unix() > claim.Exp {
 			return cc.RespondError(401, "expired")
 		}
-		code, err := server.Cl.Get(claim.UserID.Hex()).Result()
-		if err != nil {
-			return cc.RespondError(500, err)
-		}
-		if code != tokenStr {
-			return echo.ErrUnauthorized
-		}
+		// code, err := server.Cl.Get(claim.UserID.Hex()).Result()
+		// if err != nil {
+		// 	return cc.RespondError(500, err)
+		// }
+		// if code != tokenStr {
+		// 	return echo.ErrUnauthorized
+		// }
 		user, err := model.GetUserByQuery(bson.M{"_id": claim.UserID}, nil)
 		if err != nil {
 			return cc.RespondError(400, "user not found")

@@ -2,6 +2,7 @@ package main
 
 import (
 	"connect/handler"
+	"connect/model"
 	"connect/server"
 
 	"github.com/labstack/echo"
@@ -40,11 +41,19 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 	server.Mongodb = db
+	model.InitCollections()
 	defer db.Close()
 	addRoutes()
 	h := &handler.Handler{DB: db}
 	// User Routes
 	e.POST("/user/register", h.Register)
+	e.POST("/user/login", h.Login)
 	e.GET("/auth/routes", h.GetAllRoutes)
-	e.Logger.Fatal(e.Start(":8000"))
+	e.Static("/", "../public")
+	e.GET("/ws", h.Connect)
+	e.POST("/card/card", h.CreateCard)
+	e.GET("/card/card", h.GetCards)
+	e.POST("/card/list", h.CreateList)
+	e.PUT("/card/list", h.UpdateList)
+	e.Logger.Fatal(e.Start(":3002"))
 }

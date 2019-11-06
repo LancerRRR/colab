@@ -5,7 +5,6 @@ import (
 	"connect/http/response"
 	"connect/model"
 	"connect/server"
-	"fmt"
 	"reflect"
 	"time"
 
@@ -53,6 +52,46 @@ func init() {
 		Response:    []response.Route{response.Route{ID: bson.NewObjectId()}},
 	}
 	routes = append(routes, route)
+
+	route = model.Route{
+		Method:      "POST",
+		Description: "创建卡片",
+		Path:        "/card/card",
+		Auth:        []string{"guest"},
+		Service:     "card",
+		IsQuery:     false,
+	}
+	routes = append(routes, route)
+
+	route = model.Route{
+		Method:      "POST",
+		Description: "创建列表",
+		Path:        "/card/list",
+		Auth:        []string{"guest"},
+		Service:     "card",
+		IsQuery:     false,
+	}
+	routes = append(routes, route)
+
+	route = model.Route{
+		Method:      "GET",
+		Description: "获取所有卡片",
+		Path:        "/card/card",
+		Auth:        []string{"guest"},
+		Service:     "card",
+		IsQuery:     false,
+	}
+	routes = append(routes, route)
+
+	route = model.Route{
+		Method:      "PUT",
+		Description: "更新列表",
+		Path:        "/card/list",
+		Auth:        []string{"guest"},
+		Service:     "card",
+		IsQuery:     false,
+	}
+	routes = append(routes, route)
 }
 
 func addRoutes() {
@@ -81,6 +120,7 @@ func addRoutes() {
 			}
 		} else {
 			route.ID = r.ID
+			route.Auth = r.Auth
 			err := server.Mongodb.DB("Auth").C("routes").UpdateId(route.ID, route)
 			if err != nil {
 				panic(err)
@@ -106,7 +146,6 @@ func InterfaceToJSON(v interface{}) interface{} {
 	case time.Time:
 		return "string"
 	}
-	fmt.Println(reflect.TypeOf(v).Kind() == reflect.Slice)
 	switch reflect.TypeOf(v).Kind() {
 	case reflect.Struct:
 		val := reflect.ValueOf(v)

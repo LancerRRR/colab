@@ -3,7 +3,6 @@ package service
 import (
 	"connect/http/response"
 	"connect/model"
-	"connect/server"
 	"errors"
 	"time"
 
@@ -39,10 +38,10 @@ func Login(userName, password string) (*response.UserLoginResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, err = server.Cl.Set(user.ID.Hex(), t, time.Hour*72).Result()
-	if err != nil {
-		return nil, err
-	}
+	// _, err = server.Cl.Set(user.ID.Hex(), t, time.Hour*72).Result()
+	// if err != nil {
+	// 	return nil, err
+	// }
 	out.Token = t
 	out.UserID = user.ID
 	return out, nil
