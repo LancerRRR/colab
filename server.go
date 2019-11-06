@@ -45,6 +45,7 @@ func main() {
 	defer db.Close()
 	addRoutes()
 	h := &handler.Handler{DB: db}
+
 	// User Routes
 	e.POST("/user/register", h.Register)
 	e.POST("/user/login", h.Login)
