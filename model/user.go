@@ -7,7 +7,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-var dbUser = server.Mongodb.DB("user")
+var dbUser = server.Mongodb.DB("user_colab")
 
 type User struct {
 	ID         bson.ObjectId `json:"id" bson:"_id"`
@@ -22,12 +22,12 @@ type User struct {
 }
 
 func CreateUser(user User) error {
-	err := server.Mongodb.DB("user").C("user").Insert(user)
+	err := server.Mongodb.DB("user_colab").C("user").Insert(user)
 	return err
 }
 
 func GetUserByQuery(query bson.M, param bson.M) (User, error) {
 	user := User{}
-	err := server.Mongodb.DB("user").C("user").Find(query).Select(param).One(&user)
+	err := server.Mongodb.DB("user_colab").C("user").Find(query).Select(param).One(&user)
 	return user, err
 }

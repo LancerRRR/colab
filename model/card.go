@@ -14,8 +14,8 @@ var (
 )
 
 func InitCollections() {
-	CollectionList = server.Mongodb.DB("Card").C("List")
-	CollectionCard = server.Mongodb.DB("Card").C("Card")
+	CollectionList = server.Mongodb.DB("Card_colab").C("List")
+	CollectionCard = server.Mongodb.DB("Card_colab").C("Card")
 }
 
 type List struct {
@@ -78,4 +78,20 @@ func GetAllList() ([]List, error) {
 
 func UpdateListByID(id bson.ObjectId, update interface{}) error {
 	return CollectionList.UpdateId(id, update)
+}
+
+func UpdateCardByID(id bson.ObjectId, update interface{}) error {
+	return CollectionCard.UpdateId(id, update)
+}
+
+func GetCardByID(id bson.ObjectId) (Card, error) {
+	card := Card{}
+	err := CollectionCard.FindId(id).One(&card)
+	return card, err
+}
+
+func GetCardByBeforeID(id bson.ObjectId) (Card, error) {
+	card := Card{}
+	err := CollectionCard.Find(bson.M{"beforeID": id}).One(&card)
+	return card, err
 }

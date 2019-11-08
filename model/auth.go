@@ -48,7 +48,7 @@ type ResponseNested struct {
 
 func GetRouteAuth(path string) ([]string, error) {
 	route := Route{}
-	err := server.Mongodb.DB("Auth").C("routes").Find(bson.M{"path": path}).One(&route)
+	err := server.Mongodb.DB("Auth_colab").C("routes").Find(bson.M{"path": path}).One(&route)
 	return route.Auth, err
 }
 
@@ -60,6 +60,6 @@ type Claim struct {
 
 func GetAllRoutes(param bson.M) ([]response.Route, error) {
 	routes := []response.Route{}
-	err := server.Mongodb.DB("Auth").C("routes").Find(nil).Select(param).All(&routes)
+	err := server.Mongodb.DB("Auth_colab").C("routes").Find(nil).Select(param).All(&routes)
 	return routes, err
 }

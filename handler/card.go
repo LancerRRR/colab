@@ -10,7 +10,6 @@ import (
 
 func (h *Handler) CreateCard(c echo.Context) error {
 	cc := c.(*CustomContext)
-	token := c.Request().Header.Get("Authorization")
 	card := model.Card{}
 	err := cc.Bind(&card)
 	if err != nil {
@@ -20,13 +19,12 @@ func (h *Handler) CreateCard(c echo.Context) error {
 	if err != nil {
 		return cc.RespondError(500, err.Error())
 	}
-	PushToUsers(cardCreated, "CardNew", token)
+	PushToUsers(cardCreated, "CardNew")
 	return cc.Respond(200, cardCreated)
 }
 
 func (h *Handler) CreateList(c echo.Context) error {
 	cc := c.(*CustomContext)
-	token := c.Request().Header.Get("Authorization")
 	list := model.List{}
 	err := cc.Bind(&list)
 	if err != nil {
@@ -37,7 +35,7 @@ func (h *Handler) CreateList(c echo.Context) error {
 	if err != nil {
 		return cc.RespondError(500, err.Error())
 	}
-	PushToUsers(list, "/card/newList", token)
+	PushToUsers(list, "ListNew")
 	return cc.Respond(200, list)
 }
 
@@ -53,7 +51,6 @@ func (h *Handler) GetCards(c echo.Context) error {
 func (h *Handler) UpdateList(c echo.Context) error {
 	cc := c.(*CustomContext)
 	req := model.List{}
-	token := c.Request().Header.Get("Authorization")
 	err := cc.Bind(&req)
 	if err != nil {
 		return cc.RespondError(400, err.Error())
@@ -62,6 +59,21 @@ func (h *Handler) UpdateList(c echo.Context) error {
 	if err != nil {
 		return cc.RespondError(500, err.Error())
 	}
-	PushToUsers(req, "ListUpdate", token)
+	PushToUsers(req, "ListUpdate")
 	return cc.Respond(200, req)
+}
+
+func (h *Handler) UpdateCardSort(c echo.Context) error {
+	cc := c.(*CustomContext)
+	req := service.UpdateCardSortReq{}
+	err := cc.Bind(&req)
+	if err != nil {
+		return cc.RespondError(400, err.Error())
+	}
+	resp, err := service.UpdateCardSort(req)
+	if err != nil {
+		return cc.RespondError(500, err.Error())
+	}
+	PushToUsers(resp, "CardSortUpdate")
+	return cc.Respond(200, "ok")
 }

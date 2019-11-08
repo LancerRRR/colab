@@ -135,22 +135,18 @@ func (h *Handler) Connect(c echo.Context) error {
 					Channels[route][tokenStr] = channel
 				}
 			}
-			conn.WriteMessage(t, []byte(claim.UserID.Hex()+": "+string(msg)))
+			//conn.WriteMessage(t, []byte(claim.UserID.Hex()+": "+string(msg)))
 		}
 		continue
 	}
 }
 
-func PushToUsers(data interface{}, route string, token string) {
-	log.Println(token)
-	for k, channel := range Channels[route] {
-		if k != token {
-			log.Println(k)
-			dataMap := make(map[string]interface{}, 0)
-			dataMap["handler"] = route
-			dataMap["data"] = data
-			channel.Connection.WriteJSON(dataMap)
-		}
+func PushToUsers(data interface{}, route string) {
+	for _, channel := range Channels[route] {
+		dataMap := make(map[string]interface{}, 0)
+		dataMap["handler"] = route
+		dataMap["data"] = data
+		channel.Connection.WriteJSON(dataMap)
 	}
 }
 
@@ -158,7 +154,7 @@ func (h *Handler) Test(c echo.Context) error {
 	cc := c.(*CustomContext)
 	test := make(map[string]interface{}, 0)
 	test["data"] = "1111111"
-	PushToUsers(test, "a", "dwadwad")
+	PushToUsers(test, "a")
 	cc.Respond(200, "success")
 	return nil
 }

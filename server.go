@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	MONGODB_URL = "mongodb://admin:Wk950523@cluster0-shard-00-00-b0tff.mongodb.net:27017,cluster0-shard-00-01-b0tff.mongodb.net:27017,cluster0-shard-00-02-b0tff.mongodb.net:27017/test?replicaSet=Cluster0-shard-0&authSource=admin"
+	MONGODB_URL = "mongodb://dev:gogox123@gogo-api-dev-shard-00-00-uptzo.mongodb.net:27017,gogo-api-dev-shard-00-01-uptzo.mongodb.net:27017,gogo-api-dev-shard-00-02-uptzo.mongodb.net:27017/test?replicaSet=GOGO-API-DEV-shard-0&authSource=admin"
 )
 
 func main() {
@@ -56,5 +56,6 @@ func main() {
 	e.GET("/card/card", h.GetCards)
 	e.POST("/card/list", h.CreateList)
 	e.PUT("/card/list", h.UpdateList)
+	e.PUT("/card/sort", h.UpdateCardSort)
 	e.Logger.Fatal(e.Start(":3002"))
 }

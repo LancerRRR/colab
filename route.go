@@ -92,6 +92,16 @@ func init() {
 		IsQuery:     false,
 	}
 	routes = append(routes, route)
+
+	route = model.Route{
+		Method:      "PUT",
+		Description: "拖拽卡片",
+		Path:        "/card/sort",
+		Auth:        []string{"guest"},
+		Service:     "card",
+		IsQuery:     false,
+	}
+	routes = append(routes, route)
 }
 
 func addRoutes() {
@@ -114,14 +124,14 @@ func addRoutes() {
 		r, ok := routesMap[route.Path]
 		if !ok {
 			route.ID = bson.NewObjectId()
-			err := server.Mongodb.DB("Auth").C("routes").Insert(&route)
+			err := server.Mongodb.DB("Auth_colab").C("routes").Insert(&route)
 			if err != nil {
 				panic(err)
 			}
 		} else {
 			route.ID = r.ID
 			route.Auth = r.Auth
-			err := server.Mongodb.DB("Auth").C("routes").UpdateId(route.ID, route)
+			err := server.Mongodb.DB("Auth_colab").C("routes").UpdateId(route.ID, route)
 			if err != nil {
 				panic(err)
 			}
@@ -131,7 +141,7 @@ func addRoutes() {
 
 	for _, v := range routesMap {
 		v.Deprecated = true
-		err := server.Mongodb.DB("Auth").C("routes").UpdateId(v.ID, v)
+		err := server.Mongodb.DB("Auth_colab").C("routes").UpdateId(v.ID, v)
 		if err != nil {
 			panic(err)
 		}

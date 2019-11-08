@@ -4,6 +4,7 @@ import (
 	"connect/http/response"
 	"connect/model"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -22,13 +23,16 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 func Login(userName, password string) (*response.UserLoginResp, error) {
+	log.Println(time.Now())
 	user, err := model.GetUserByQuery(bson.M{"email": userName}, nil)
 	if err != nil {
 		return nil, err
 	}
+	log.Println(time.Now())
 	if !CheckPasswordHash(password, user.Password) {
 		return nil, errors.New("Invalid password")
 	}
+	log.Println(time.Now())
 	out := &response.UserLoginResp{}
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
@@ -38,6 +42,7 @@ func Login(userName, password string) (*response.UserLoginResp, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Println(time.Now())
 	// _, err = server.Cl.Set(user.ID.Hex(), t, time.Hour*72).Result()
 	// if err != nil {
 	// 	return nil, err
