@@ -3,6 +3,7 @@ package handler
 import (
 	"connect/http/request"
 	"connect/model"
+	"fmt"
 	"log"
 	"time"
 
@@ -18,7 +19,8 @@ func CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		if c.Path() == "/ws" || c.Path() == "/test" {
 			return next(c)
 		}
-		routeAuth, err := model.GetRouteAuth(c.Path())
+		fmt.Println(c.Path())
+		routeAuth, err := model.GetRouteAuth(c.Path(), c.Request().Method)
 		if err != nil {
 			return echo.ErrNotFound
 		}

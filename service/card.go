@@ -73,7 +73,7 @@ func UpdateCardSort(data UpdateCardSortReq) (map[string]interface{}, error) {
 	out := make(map[string]interface{}, 0)
 	out["id"] = data.ID
 	out["oldListID"] = oldList.ID
-	out["newListID"] = data.ID
+	out["newListID"] = data.NewListID
 	out["newSort"] = data.Sort
 	if data.NewListID == card.ListID {
 		oldSort := int(0)
@@ -138,7 +138,14 @@ func UpdateCardSort(data UpdateCardSortReq) (map[string]interface{}, error) {
 			}
 			newSort2 = append(newSort2, id)
 		}
+		if data.Sort >= len(newList.Sort) {
+			newSort2 = append(newSort2, card.ID)
+		}
 		err = model.UpdateListByID(newList.ID, bson.M{"$set": bson.M{"sort": newSort2}})
+		if err != nil {
+			return nil, err
+		}
+		err = model.UpdateCardByID(data.ID, bson.M{"$set": bson.M{"listID": newList.ID, "list": newList.Title}})
 		if err != nil {
 			return nil, err
 		}

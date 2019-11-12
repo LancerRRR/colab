@@ -46,9 +46,9 @@ type ResponseNested struct {
 	Nested      interface{} `json:"nested" bson:"nested"`
 }
 
-func GetRouteAuth(path string) ([]string, error) {
+func GetRouteAuth(path, method string) ([]string, error) {
 	route := Route{}
-	err := server.Mongodb.DB("Auth_colab").C("routes").Find(bson.M{"path": path}).One(&route)
+	err := server.Mongodb.DB("Auth_colab").C("routes").Find(bson.M{"path": path, "method": method}).One(&route)
 	return route.Auth, err
 }
 

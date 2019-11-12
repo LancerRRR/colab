@@ -111,7 +111,7 @@ func addRoutes() {
 	}
 	routesMap := make(map[string]response.Route, 0)
 	for _, currentRoute := range currentRoutes {
-		routesMap[currentRoute.Path] = currentRoute
+		routesMap[currentRoute.Path+currentRoute.Method] = currentRoute
 	}
 	for _, route := range routes {
 		if route.Request != nil {
@@ -121,7 +121,7 @@ func addRoutes() {
 			route.ResponseJSON = InterfaceToJSON(route.Response)
 			route.Response = InterfaceToType(route.Response)
 		}
-		r, ok := routesMap[route.Path]
+		r, ok := routesMap[route.Path+route.Method]
 		if !ok {
 			route.ID = bson.NewObjectId()
 			err := server.Mongodb.DB("Auth_colab").C("routes").Insert(&route)
