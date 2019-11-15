@@ -93,6 +93,7 @@ func UpdateCardSort(data UpdateCardSortReq) (map[string]interface{}, error) {
 				if i == data.Sort {
 					newSort = append(newSort, id)
 					newSort = append(newSort, data.ID)
+					continue
 				}
 				newSort = append(newSort, id)
 			}
@@ -106,6 +107,7 @@ func UpdateCardSort(data UpdateCardSortReq) (map[string]interface{}, error) {
 				if i == data.Sort {
 					newSort = append(newSort, data.ID)
 					newSort = append(newSort, id)
+					continue
 				}
 				newSort = append(newSort, id)
 			}
